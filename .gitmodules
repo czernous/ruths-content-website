@@ -1,3 +1,6 @@
 [submodule "client"]
 	path = client
 	url = git@github.com:czernous/ruths-content-website-client.git
+[submodule "admin"]
+	path = admin
+	url = git@github.com:czernous/ruths-content-website-admin.git
