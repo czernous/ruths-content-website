@@ -1,0 +1,68 @@
+version: "3"
+services:
+  client:
+    build:
+      dockerfile: ./Dockerfile.prod
+      context: ./client
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    container_name: app-client
+    command: npm run start
+    networks:
+      - app-network
+  admin:
+    container_name: app-admin
+    build:
+      dockerfile: ./Dockerfile
+      context: ./admin
+    restart: unless-stopped
+    env_file: .env
+    command: npm run start
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_HOST: admin-db
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PORT: ${DATABASE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      NODE_ENV: production
+    volumes:
+      - ./admin/config:/opt/app/config
+      - ./admin/src:/opt/app/src
+      - ./admin/package.json:/opt/package.json
+      - ./admin/package-lock.json:/opt/package-lock.json
+      - ./.env:/opt/app/.env
+    ports:
+      - "1337:1337"
+    networks:
+      - app-network
+    depends_on:
+      - admin-db
+
+  admin-db:
+    image: postgres:12.0-alpine
+    container_name: admin-db
+    platform: linux/amd64 #for platform error on Apple M1 chips
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - strapi-data:/var/lib/postgresql/data/ #using a volume
+      #- ./data:/var/lib/postgresql/data/ # if you want to use a bind folder
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+volumes:
+    strapi-data:
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge

@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    command: npm run dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./client/src:/usr/src/app/src  
+    ports:
+      - "3000:3000"
+  admin:
+    command: npm run develop
