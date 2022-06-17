@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 
 services:
   client:
@@ -9,8 +9,15 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./client/src:/usr/src/app/src  
+      - ./client/src:/usr/src/app/src
     ports:
       - "3000:3000"
   admin:
     command: npm run develop
+  nginx:
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/configs/nginx.conf.dev:/etc/nginx/templates/default.conf.template
+    environment:
+      - NGINX_HOST=${DEV_NGINX_HOST}
