@@ -20,13 +20,14 @@ services:
     command: npm run start
     environment:
       DATABASE_CLIENT: ${DATABASE_CLIENT}
-      DATABASE_HOST: admin-db
+      DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PORT: ${DATABASE_PORT}
       JWT_SECRET: ${JWT_SECRET}
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      STRAPI_HOST: ${STRAPI_PROD_HOST}
       NODE_ENV: production
     volumes:
       - ./admin/config:/opt/app/config
@@ -38,6 +39,8 @@ services:
       - app-network
     depends_on:
       - admin-db
+    ports:
+      - "1337:1337"
 
   admin-db:
     image: postgres:12.0-alpine
@@ -51,7 +54,7 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - strapi-data:/var/lib/postgresql/data/ #using a volume
-      #- ./data:/var/lib/postgresql/data/ # if you want to use a bind folder
+      - ./data/admin-db/backup:/backup # bind folder
     ports:
       - "5432:5432"
     networks:

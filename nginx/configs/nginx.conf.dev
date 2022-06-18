@@ -4,11 +4,6 @@ server {
     listen ${NGINX_PORT};
     server_name ${NGINX_HOST};
     
-    location /admin {
-        ## rewrite ^/backend/(.*) /$1 break;
-        proxy_pass http://admin:1337;
-    }
-
     location /api/ {
         proxy_pass http://client:3000/api/;
         # upgrade http for ws
@@ -25,3 +20,31 @@ server {
         proxy_set_header Connection "upgrade";
     }
 }
+
+server {
+    # Listen HTTPS
+    listen ${NGINX_PORT};
+    server_name ${STRAPI_HOST};
+
+    # SSL config
+    # ssl_certificate /path/to/your/certificate/file;
+    # ssl_certificate_key /path/to/your/certificate/key;
+
+    # Proxy Config
+    location / {
+        proxy_pass http://admin:1337;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_pass_request_headers on;
+    }
+}
+ 
+
+

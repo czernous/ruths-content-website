@@ -10,10 +10,11 @@ services:
     tty: true
     volumes:
       - ./client/src:/usr/src/app/src
-    ports:
-      - "3000:3000"
   admin:
     command: npm run develop
+    environment:
+      NODE_ENV: development
+      STRAPI_HOST: ${STRAPI_DEV_HOST}
   nginx:
     ports:
       - "80:80"
@@ -21,3 +22,4 @@ services:
       - ./nginx/configs/nginx.conf.dev:/etc/nginx/templates/default.conf.template
     environment:
       - NGINX_HOST=${DEV_NGINX_HOST}
+      - STRAPI_HOST=${STRAPI_DEV_HOST}
