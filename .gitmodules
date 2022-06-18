@@ -4,3 +4,4 @@
 [submodule "admin"]
 	path = admin
 	url = git@github.com:czernous/ruths-content-website-admin.git
+	branch = main
