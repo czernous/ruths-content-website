@@ -11,7 +11,7 @@ if [ -f .env ]; then
     export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
     # For instance, will be example_kaggle_key
     echo "Backing up $DATABASE_NAME database"
-    docker exec -it admin-db bash -c "pg_dump -U $DATABASE_USER $DATABASE_NAME -w $DATABASE_PASSWORD -f $BACKUP_FOLDER$DUMP_NAME$CURRENT_DATE.dmp $x"
+    docker exec -it admin-db bash -c "pg_dump --clean -U $DATABASE_USER $DATABASE_NAME -w $DATABASE_PASSWORD -f $BACKUP_FOLDER$DUMP_NAME$CURRENT_DATE.dmp $x"
     #sudo chmod -R 777 data/admin-db/backup
     echo "Backing up $DATABASE_NAME database completed"
 fi

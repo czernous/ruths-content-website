@@ -40,10 +40,11 @@ fi;
 echo $CONTAINER_BACKUP_FOLDER$backupName
 
 echo "Start database recovery"
-docker exec -it admin-db bash -c "psql -f $CONTAINER_BACKUP_FOLDER$backupName -U $DATABASE_USER $DATABASE_NAME"
+docker exec -it admin-db bash -c "psql -c 'drop database $DATABASE_NAME;' -U $DATABASE_USER $DATABASE_NAME | psql -f $CONTAINER_BACKUP_FOLDER$backupName -U $DATABASE_USER $DATABASE_NAME"
 
 if [[ "${REMOVE_BACKUP}" = "Y" ]]; then
 	rm -f "${BACKUP_FILE}"
 fi;
 
 echo "Database recovery is done";
+

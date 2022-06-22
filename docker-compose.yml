@@ -29,9 +29,14 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       STRAPI_HOST: ${STRAPI_PROD_HOST}
       NODE_ENV: production
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME}
+      CLOUDINARY_KEY: ${CLOUDINARY_KEY}
+      CLOUDINARY_SECRET: ${CLOUDINARY_SECRET}
+      CLOUDINARY_URL: cloudinary://${CLOUDINARY_KEY}:${CLOUDINARY_SECRET}@${CLOUDINARY_NAME}
     volumes:
       - ./admin/config:/opt/app/config
       - ./admin/src:/opt/app/src
+      - ./admin/public:/opt/app/public
       - ./admin/package.json:/opt/package.json
       - ./admin/package-lock.json:/opt/package-lock.json
       - ./.env:/opt/app/.env
