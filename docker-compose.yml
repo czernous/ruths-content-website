@@ -8,6 +8,8 @@ services:
         NODE_VERSION: ${NODE_VERSION}
     container_name: app-client
     command: npm run start
+    environment:
+      STRAPI_HOST: ${STRAPI_PROD_HOST}
     networks:
       - app-network
   admin:
@@ -28,6 +30,7 @@ services:
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       STRAPI_HOST: ${STRAPI_PROD_HOST}
+      CLIENT_HOST: ${PROD_NGINX_HOST}
       NODE_ENV: production
       CLOUDINARY_NAME: ${CLOUDINARY_NAME}
       CLOUDINARY_KEY: ${CLOUDINARY_KEY}
@@ -44,8 +47,6 @@ services:
       - app-network
     depends_on:
       - admin-db
-    ports:
-      - "1337:1337"
 
   admin-db:
     image: postgres:12.0-alpine
@@ -74,7 +75,8 @@ services:
       - .env:/etc/nginx/environment/.env
     environment:
       - NGINX_HOST=${PROD_NGINX_HOST}
-      - NGINX_PORT=&{NGINX_PORT}
+      - NGINX_PORT=${NGINX_PORT}
+      - STRAPI_HOST=${STRAPI_PROD_HOST}
     command: >
       bin/bash -c "source /etc/nginx/environment/.env && envsubst \"`for v in $$(compgen -v);do printf '$${%s} ' $$v;done`'\" < /etc/nginx/templates/default.conf.template > etc/nginx/conf.d/nginx.conf && nginx -g 'daemon off;'"
     depends_on:

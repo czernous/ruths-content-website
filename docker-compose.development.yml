@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile.dev
       context: ./client
     command: npm run dev
+    environment:
+      STRAPI_HOST: ${STRAPI_DEV_HOST}
+      NODE_ENV: development
     stdin_open: true
     tty: true
     volumes:
@@ -15,6 +18,7 @@ services:
     environment:
       NODE_ENV: development
       STRAPI_HOST: ${STRAPI_DEV_HOST}
+      CLIENT_HOST: ${DEV_NGINX_HOST}
   nginx:
     ports:
       - "80:80"
